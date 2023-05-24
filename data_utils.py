@@ -1,35 +1,29 @@
 #! /usr/bin/env python3
 
 import csv
-import os
 
-FILENAME = "students.csv"
 
-student_data = []
 
 # Read File
-def readStudentFile(file_name):
-    here = os.path.dirname(os.path.abspath(__file__))
-    my_file = os.path.join(here, FILENAME)
+def readStudentFile():
+  file = open("students.csv", "r")
+  students = list(csv.reader(file, delimiter=","))
+  print()
+  file.close()
+  return students
 
-    try:
-        with open(my_file, 'r') as file:
-            reader = csv.reader(file)
-            for row in reader:
-                student_data.append(row)
-    except FileNotFoundError:
-        print(f"File '{my_file}' not found.")
-        exit()
+# Read Courses
+# def readCouresesFile():
 
-# Add a check to see if the file opened
-readStudentFile(FILENAME)
-
+    
 # Student Validation Function
-def validStudent(student_id):
-    for student in student_data:
-        if student_id == student[0]:
-            return True
-    return False
+def studentIDValidation(studentID):
+    students = readStudentFile()
+    for studentID in students:
+        if studentID == students[0]:
+          return False
+        return True
+
 
 # Display menu
 def displayMenu():
@@ -42,42 +36,71 @@ def displayMenu():
     print("exit     - End Session")
     print()
 
+# # list
+# def listSelection():
 
+    
 # Add New Student Function
 def addNewStudent(studentID):
     # Variables
-    first_name = ""
-    last_name = ""
+    first_name = []
+    last_name = []
 
-    while True:
-        # Get student's last name
-        last_name = input("Enter the student's last name: ")
+    # Get student's last name
+    for _ in range(3):  # Allow a maximum of 3 attempts
+        last_name_input = input("Enter the student's last name: ")
         # Input validation
-        if last_name.isalpha() and last_name.strip() != "":
+        if last_name_input.isalpha() and last_name_input.strip() != "":
+            last_name = list(last_name_input)
             break
         else:
-            print("Student's last name can only contain alphabetic letters and cannot be left blank.")
-      
-        # Get student's first name
-        first_name = input("Enter the student's first name: ")
+            print("Invalid input. Please enter a valid last name.")
+
+    # Get student's first name
+    for _ in range(3):  # Allow a maximum of 3 attempts
+        first_name_input = input("Enter the student's first name: ")
         # Input validation
-        if first_name.isalpha() and first_name.strip() != "":
+        if first_name_input.isalpha() and first_name_input.strip() != "":
+            first_name = list(first_name_input)
             break
         else:
-            print("Student's first name can only contain alphabetic letters and cannot be left blank.")
+            print("Invalid input. Please enter a valid first name.")
 
     # Generate student ID
-    student_id = f"{first_name[0].lower()}{last_name.lower()}"
+    student_id = f"{first_name[0].lower()}{last_name[0].lower()}"
     index = 0
-     
-    while f'{student_id}{index}' in [student[0] for student in student_data]:
-        index += 1
-    
-    student_id = f"{student_id}{index}"
-    student_data.append([student_id, last_name, first_name])
 
-    print(f"Student {student_id} has been added.\n")
-    print(f"Good morning {first_name}, what would you like to do today?\n")
+    # while f'{student_id}{index}' in [student[0] for student in student_data]:
+    #     index += 1
+
+    # student_id = f"{student_id}{index}"
+    # student_data.append([student_id, last_name, first_name])
+    # print(f"Student {student_id} has been added.\n")
+    return ''.join(first_name)  # Join the first name characters into a string
+
+
+
+
+# Login Function
+def login():
+    students = readStudentFile()
+    while True:
+        studentID = input("\nEnter Student Id (or 'add' to add a new student, or 'exit' to exit the application): ")
+        print()
+        # Input validation
+        studentIDValidation(studentID)
+
+        # Exit Login
+        if studentID == 'exit':
+          print("\nSession ended.\n")
+          break
+
+        # Add student name
+        if studentID == 'add':
+            fristName = addNewStudent(studentID)
+            print(f"Good morning {fristName}, what would you like to do today?\n")
+            continue
+            
 
     # Display menu
     while True:
@@ -103,13 +126,3 @@ def addNewStudent(studentID):
             # Menu
         else: 
             print("Invalid selection. Please try again.\n")
-
-
-# Login Function
-def login():
-    while True:
-        studentID = input("\nEnter Student Id (or 'add' to add a new student, or 'exit' to exit the application): ")
-        addNewStudent(studentID)
-
-        if studentID == 'exit':
-            print("\nSession ended.\n")
