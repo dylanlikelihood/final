@@ -1,4 +1,9 @@
 #! /usr/bin/env python3
+"""
+    Title: data_utils.py
+    Author: Dylan Armbruster
+    Data: 5/24/2023
+"""
 
 import csv
 
@@ -25,10 +30,11 @@ def readStudentFile():
 # Student Validation Function
 def studentIDValidation(studentID):
     students = readStudentFile()
-    for studentID in students:
-        if studentID == students[0]:
-          return False
+    
+    if studentID in students:
         return True
+    else:
+        return False
 
 
 # Display menu
@@ -42,49 +48,70 @@ def displayMenu():
     print("exit     - End Session")
     print()
 
+# Menu Selection
+def menuSelection():
+    # Display menu
+    while True:
+        displayMenu()
+        selection = input("Enter selection: ")
+        if selection.lower() == "info":
+            print("You're in info")
+        # Student information
+        elif selection.lower() == "list":
+                print("You're in list")
+        # Course listing
+        elif selection.lower() == "detail":
+            print("You're in detail")
+        # Course detail
+        elif selection.lower() == "register":
+            print("You're in register")
+        # Register for a class
+        elif selection.lower() == "drop":
+                print("You're in drop")
+        # Drop class
+        elif selection.lower() == "menu":
+            print("You're in menu")
+        # Menu
+        else: 
+            print("Invalid selection. Please try again.\n")
+
 # # list
-# def listSelection():
+# def listSelection(studentID):
+    
 
     
 # Add New Student Function
 def addNewStudent(studentID):
     # Variables
-    first_name = []
-    last_name = []
+    students = readStudentFile()
 
-    # Get student's last name
-    for _ in range(3):  # Allow a maximum of 3 attempts
-        last_name_input = input("Enter the student's last name: ")
-        # Input validation
-        if last_name_input.isalpha() and last_name_input.strip() != "":
-            last_name = list(last_name_input)
+    # Last Name User validation
+    while True:
+        last_name = input("Enter your last name: ").lower()
+        if last_name.isalpha():
             break
         else:
             print("Invalid input. Please enter a valid last name.")
-
-    # Get student's first name
-    for _ in range(3):  # Allow a maximum of 3 attempts
-        first_name_input = input("Enter the student's first name: ")
-        # Input validation
-        if first_name_input.isalpha() and first_name_input.strip() != "":
-            first_name = list(first_name_input)
+    # First Name User validation
+    while True:
+        first_name = input("Enter your first name: ").lower()
+        if first_name.isalpha():
             break
         else:
             print("Invalid input. Please enter a valid first name.")
-
-    # Generate student ID
-    student_id = f"{first_name[0].lower()}{last_name[0].lower()}"
+    
+    fl = first_name[0]
+    newStudentID = f"{fl}{last_name}"
     index = 0
 
-    # while f'{student_id}{index}' in [student[0] for student in student_data]:
-    #     index += 1
+    while f'{newStudentID}{index}' in students:
+        index += 1
+    
+    newStudentID = f"{newStudentID}{index}"
+    students[newStudentID] = [last_name, first_name]
 
-    # student_id = f"{student_id}{index}"
-    # student_data.append([student_id, last_name, first_name])
-    # print(f"Student {student_id} has been added.\n")
-    return ''.join(first_name)  # Join the first name characters into a string
-
-
+    print(f"Greetings {newStudentID}, what would you like to do today?")
+    menuSelection()
 
 
 # Login Function
@@ -100,10 +127,10 @@ def login():
         elif studentID == 'add':                # Add student name
             fristName = addNewStudent(studentID)
             print(f"Good morning {fristName}, what would you like to do today?\n")
-            break
         elif studentID in readStudentFile():
             studentsFirstName = students[studentID]['firstname'] # Get first name from dictionary
             print(f"Welcome {studentsFirstName}, what would you like to do today?") # print first name
-            break
+            menuSelection()
         else:
-            print("You're in info")
+            break
+    
