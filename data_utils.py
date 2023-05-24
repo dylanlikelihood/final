@@ -24,7 +24,26 @@ def readStudentFile():
 
 
 # Read Courses
-# def readCouresesFile():
+def readCoursesFile():
+    courses = {}
+    file = open("courses.csv")
+    reader = csv.reader(file)
+
+    for row in reader:
+        course_code = row[0]
+        courses[course_code] = {
+            'ticket': row[0],
+            'code': row[1],
+            'course name': row[2],
+            'units': row[3],
+            'day': row[4],
+            'time': row[5],
+            'instructor': row[6]
+        }
+
+    file.close()
+
+    return courses
 
     
 # Student Validation Function
@@ -48,14 +67,21 @@ def displayMenu():
     print("exit     - End Session")
     print()
 
+
+def showStudentInformation(studentID):
+    students = readStudentFile()
+    courses = readCoursesFile()
+    
+
 # Menu Selection
-def menuSelection():
+def menuSelection(studentID):
     # Display menu
     while True:
         displayMenu()
         selection = input("Enter selection: ")
         if selection.lower() == "info":
             print("You're in info")
+            showStudentInformation(studentID)
         # Student information
         elif selection.lower() == "list":
                 print("You're in list")
@@ -130,7 +156,6 @@ def login():
         elif studentID in readStudentFile():
             studentsFirstName = students[studentID]['firstname'] # Get first name from dictionary
             print(f"Welcome {studentsFirstName}, what would you like to do today?") # print first name
-            menuSelection()
+            menuSelection(studentID)
         else:
             break
-    
