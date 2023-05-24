@@ -67,10 +67,42 @@ def displayMenu():
     print("exit     - End Session")
     print()
 
-
+# Student Information Function:
 def showStudentInformation(studentID):
     students = readStudentFile()
     courses = readCoursesFile()
+
+    if studentID in students:
+        student = students[studentID]
+        last_name = student['lastname']
+        first_name = student['firstname']
+        registered_courses = []  # List to store the registered courses
+
+        # Retrieve the registered courses for the student
+        for course_code, course_details in courses.items():
+            if studentID == course_details['code']:
+                registered_courses.append(course_details)
+
+        # Print student information
+        print("Student id:", studentID)
+        print("Last Name:", last_name)
+        print("First Name:", first_name)
+
+        # Print registered courses
+        print("Registered Courses:")
+        print("Ticket Code   Course Name                          Units Day    Time          Instructor")
+        print("========================================================================================")
+        for course in registered_courses:
+            print(f"{course['ticket']:12} {course['course name'][:38]:38} {course['units']:5} {course['day']:5} {course['time']:13} {course['instructor']}")
+        print()
+
+        # Print total line
+        num_courses = len(registered_courses)
+        total_units = sum(float(course['units']) for course in registered_courses)
+        print(f"{num_courses} Course(s) Registered                                    Unbits: {total_units}")
+    else:
+        print("Student not found.")
+
     
 
 # Menu Selection
@@ -80,8 +112,8 @@ def menuSelection(studentID):
         displayMenu()
         selection = input("Enter selection: ")
         if selection.lower() == "info":
-            print("You're in info")
             showStudentInformation(studentID)
+            break
         # Student information
         elif selection.lower() == "list":
                 print("You're in list")
@@ -106,7 +138,7 @@ def menuSelection(studentID):
     
 
     
-# Add New Student Function
+# Add New Student Function:
 def addNewStudent(studentID):
     # Variables
     students = readStudentFile()
@@ -157,5 +189,6 @@ def login():
             studentsFirstName = students[studentID]['firstname'] # Get first name from dictionary
             print(f"Welcome {studentsFirstName}, what would you like to do today?") # print first name
             menuSelection(studentID)
+            break
         else:
             break
