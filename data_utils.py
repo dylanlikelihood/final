@@ -45,6 +45,25 @@ def readCoursesFile():
 
     return courses
 
+# Read Registrations
+def readRegistrationsFile():
+    registrations = {}
+    file = open("registration.csv")
+    reader = csv.reader(file)
+
+    for row in reader:
+        studentID = row[0]
+        course_code = row[1]
+
+        if studentID in registrations:
+            registrations[studentID].append(course_code)
+        else:
+            registrations[studentID] = [course_code]
+
+    file.close()
+
+    return registrations
+
     
 # Student Validation Function
 def studentIDValidation(studentID):
@@ -71,17 +90,17 @@ def displayMenu():
 def showStudentInformation(studentID):
     students = readStudentFile()
     courses = readCoursesFile()
+    registered_courses = readRegistrationsFile()
 
     if studentID in students:
         student = students[studentID]
         last_name = student['lastname']
         first_name = student['firstname']
-        registered_courses = []  # List to store the registered courses
 
         # Retrieve the registered courses for the student
         for course_code, course_details in courses.items():
-            if studentID == course_details['code']:
-                registered_courses.append(course_details)
+            if studentID in course_details['code']:
+                registered_courses[course_code] = course_details
 
         # Print student information
         print("Student id:", studentID)
@@ -92,17 +111,16 @@ def showStudentInformation(studentID):
         print("Registered Courses:")
         print("Ticket Code   Course Name                          Units Day    Time          Instructor")
         print("========================================================================================")
-        for course in registered_courses:
-            print(f"{course['ticket']:12} {course['course name'][:38]:38} {course['units']:5} {course['day']:5} {course['time']:13} {course['instructor']}")
+        for course_code, course_details in registered_courses.items():
+            print(f"{course_code:12} {course_details['course name'][:38]:38} {course_details['units']:5} {course_details['day']:5} {course_details['time']:13} {course_details['instructor']}")
         print()
 
         # Print total line
         num_courses = len(registered_courses)
-        total_units = sum(float(course['units']) for course in registered_courses)
-        print(f"{num_courses} Course(s) Registered                                    Unbits: {total_units}")
+        total_units = sum(float(course_details['units']) for course_details in registered_courses.values())
+        print(f"{num_courses} Course(s) Registered                                    Units: {total_units}")
     else:
         print("Student not found.")
-
     
 
 # Menu Selection
