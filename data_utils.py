@@ -2,15 +2,21 @@
 
 import csv
 
-
-
-# Read File
+# Read Student File
 def readStudentFile():
-  file = open("students.csv", "r")
-  students = list(csv.reader(file, delimiter=","))
-  print()
-  file.close()
-  return students
+    # students dictionary
+    students = {}
+    file = open("students.csv")
+    reader = csv.reader(file)
+
+    for row in reader:
+        students[row[0]] = {'lastname': row[1], 'firstname': row[2]}
+
+    file.close()
+
+    return students  # Return the 'students' dictionary
+
+
 
 # Read Courses
 # def readCouresesFile():
@@ -85,44 +91,19 @@ def addNewStudent(studentID):
 def login():
     students = readStudentFile()
     while True:
+        # User input
         studentID = input("\nEnter Student Id (or 'add' to add a new student, or 'exit' to exit the application): ")
         print()
-        # Input validation
-        studentIDValidation(studentID)
-
-        # Exit Login
-        if studentID == 'exit':
+        if studentID == 'exit':                 # Exit Login
           print("\nSession ended.\n")
           break
-
-        # Add student name
-        if studentID == 'add':
+        elif studentID == 'add':                # Add student name
             fristName = addNewStudent(studentID)
             print(f"Good morning {fristName}, what would you like to do today?\n")
-            continue
-            
-
-    # Display menu
-    while True:
-        displayMenu()
-        selection = input("Enter selection: ")
-        if selection.lower() == "info":
+            break
+        elif studentID in readStudentFile():
+            studentsFirstName = students[studentID]['firstname'] # Get first name from dictionary
+            print(f"Welcome {studentsFirstName}, what would you like to do today?") # print first name
+            break
+        else:
             print("You're in info")
-            # Student information
-        elif selection.lower() == "list":
-            print("You're in list")
-            # Course listing
-        elif selection.lower() == "detail":
-            print("You're in detail")
-            # Course detail
-        elif selection.lower() == "register":
-            print("You're in register")
-            # Register for a class
-        elif selection.lower() == "drop":
-            print("You're in drop")
-            # Drop class
-        elif selection.lower() == "menu":
-            print("You're in menu")
-            # Menu
-        else: 
-            print("Invalid selection. Please try again.\n")
